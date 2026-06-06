@@ -1328,6 +1328,11 @@ body::after {
   box-shadow: 0 0 12px rgba(255,215,0,0.25);
 }
 .chat-btn:hover { background: rgba(255,215,0,0.12); }
+.raw-p0-link {
+  display: block; text-align: center; color: var(--text-dim);
+  font-size: 9px; text-decoration: none; margin: -4px 0 10px;
+}
+.raw-p0-link:hover { color: var(--accent-blue); }
 .btn-status {
   margin-top: 6px;
   font-size: 10px;
@@ -1870,7 +1875,8 @@ SYNC: OK</div>
 
     <!-- Action Buttons -->
     <div class="btn-panel">
-      <a href="chat.html" class="g-btn g-btn-gold chat-btn">&#128172; CHAT WITH P0</a>
+      <a href="assistant.html" class="g-btn g-btn-gold chat-btn">&#128172; CHAT WITH P0</a>
+      <a href="chat.html" class="raw-p0-link">&#8250; talk to raw P0 (tiny from-scratch model)</a>
       <div class="btn-panel-title">&#9670; REQUEST UPDATE</div>
       <div class="btn-grid">
         <button class="g-btn" onclick="doRefresh()">&#8635; REFRESH</button>

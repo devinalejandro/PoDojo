@@ -15,3 +15,9 @@
   to = "http://24.144.111.138:8002/api/op/:splat"
   status = 200
   force = true
+
+[[redirects]]
+  from = "/chat-api/*"
+  to = "http://24.144.111.138:8003/api/:splat"
+  status = 200
+  force = true

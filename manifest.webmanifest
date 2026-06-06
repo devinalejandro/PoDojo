@@ -1,0 +1,14 @@
+{
+  "name": "P0 Daycare — CIPHER World",
+  "short_name": "P0 Daycare",
+  "description": "Watch Patient Zero train, and chat with the from-scratch model.",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#0d0d1f",
+  "theme_color": "#1a1a2e",
+  "icons": [
+    { "src": "icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any maskable" }
+  ]
+}

@@ -1,0 +1,184 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, maximum-scale=1">
+<title>Chat with P0</title>
+<meta name="theme-color" content="#1a1a2e">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="icon.svg">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Chat with P0">
+<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=DotGothic16&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#0d0d1f; --panel:#15152a; --line:rgba(255,255,255,.08);
+    --text:#eef0ff; --muted:#9a9ab8; --tiger:#ff9a3a; --tiger-deep:#ff7a1a;
+    --gold:#ffd700; --user:#3a2a5a;
+  }
+  *{box-sizing:border-box}
+  html,body{height:100%;margin:0}
+  body{
+    background:var(--bg); color:var(--text);
+    font-family:'DotGothic16',-apple-system,system-ui,sans-serif;
+    display:flex; flex-direction:column;
+    /* respect iOS safe areas / notch */
+    padding-top:env(safe-area-inset-top);
+    padding-bottom:env(safe-area-inset-bottom);
+    -webkit-font-smoothing:antialiased; overflow:hidden;
+  }
+  /* ---- header ---- */
+  header{
+    display:flex; align-items:center; gap:10px; padding:12px 14px;
+    background:#1a1a2e; border-bottom:3px solid var(--tiger-deep); flex-shrink:0;
+  }
+  .back{
+    color:var(--gold); text-decoration:none; font-family:'Press Start 2P';
+    font-size:10px; border:2px solid var(--gold); border-radius:8px;
+    padding:8px 10px; line-height:1; white-space:nowrap;
+  }
+  .back:active{transform:translateY(1px)}
+  .htitle{font-family:'Press Start 2P'; font-size:12px; color:var(--tiger); letter-spacing:1px}
+  .hmeta{margin-left:auto; font-size:11px; color:var(--muted); text-align:right; line-height:1.4}
+  .dot{display:inline-block;width:8px;height:8px;border-radius:50%;background:#888;margin-right:4px;vertical-align:middle}
+  .dot.on{background:#4fffb0} .dot.busy{background:var(--tiger);animation:bl .8s steps(2) infinite}
+  @keyframes bl{50%{opacity:.3}}
+  /* ---- chat ---- */
+  #chat{flex:1; overflow-y:auto; padding:16px 14px 8px; display:flex; flex-direction:column; gap:14px; -webkit-overflow-scrolling:touch}
+  .intro{color:var(--muted); font-size:14px; line-height:1.7; text-align:center; margin:auto; max-width:440px; padding:20px}
+  .intro b{color:var(--tiger)}
+  .chips{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-top:14px}
+  .chip{padding:9px 13px;border-radius:20px;font-size:13px;color:var(--muted);
+    background:rgba(255,255,255,.04);border:1px solid var(--line);cursor:pointer}
+  .chip:active{background:rgba(255,154,58,.15);color:var(--text)}
+  .msg{display:flex;gap:10px;max-width:100%}
+  .msg .av{flex-shrink:0;width:34px;height:34px;border-radius:10px;display:grid;place-items:center;
+    font-family:'Press Start 2P';font-size:9px}
+  .msg.you{flex-direction:row-reverse}
+  .msg.you .av{background:var(--user);color:#cbb6ff}
+  .msg.p0 .av{background:linear-gradient(135deg,var(--tiger),var(--tiger-deep));color:#3a1a00}
+  .bubble{padding:11px 14px;border-radius:14px;font-size:15px;line-height:1.6;white-space:pre-wrap;word-break:break-word;max-width:80%}
+  .msg.you .bubble{background:var(--user);border:1px solid rgba(123,97,255,.3)}
+  .msg.p0 .bubble{background:var(--panel);border:1px solid var(--line);font-family:ui-monospace,Menlo,Consolas,monospace;font-size:14px;color:#ffe9c8}
+  .bubble.cursor::after{content:'▋';color:var(--tiger);animation:bl 1s steps(2) infinite}
+  /* ---- composer ---- */
+  footer{flex-shrink:0;padding:10px 12px;background:#15152a;border-top:1px solid var(--line)}
+  .settings{display:none;gap:14px;padding:8px 2px 12px}
+  .settings.show{display:flex}
+  .sg{flex:1;display:flex;flex-direction:column;gap:4px}
+  .sg label{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;display:flex;justify-content:space-between}
+  .sg label b{color:var(--tiger)}
+  .sg input[type=range]{width:100%;accent-color:var(--tiger)}
+  .row{display:flex;gap:8px;align-items:flex-end}
+  #gear{background:none;border:1px solid var(--line);color:var(--muted);border-radius:10px;
+    width:46px;height:46px;font-size:18px;cursor:pointer;flex-shrink:0}
+  #gear:active{background:rgba(255,255,255,.05)}
+  textarea{flex:1;resize:none;background:#0a0a18;color:var(--text);border:1px solid var(--line);
+    border-radius:12px;padding:13px 14px;font-family:inherit;font-size:16px;line-height:1.4;
+    min-height:46px;max-height:140px}
+  textarea:focus{outline:none;border-color:var(--tiger)}
+  #send{flex-shrink:0;width:auto;min-width:56px;height:46px;padding:0 16px;border:none;border-radius:12px;
+    background:linear-gradient(135deg,var(--tiger),var(--tiger-deep));color:#2a1400;
+    font-family:'Press Start 2P';font-size:10px;cursor:pointer}
+  #send.stop{background:linear-gradient(135deg,#ff6b6b,#e0473d);color:#fff}
+  #send:active{transform:translateY(1px)}
+  .note{font-size:11px;color:var(--muted);text-align:center;padding:6px 0 2px;line-height:1.4}
+</style>
+</head>
+<body>
+  <header>
+    <a class="back" href="index.html">‹ DOJO</a>
+    <div class="htitle">CHAT · P0</div>
+    <div class="hmeta"><span class="dot" id="dot"></span><span id="meta">connecting…</span></div>
+  </header>
+
+  <div id="chat">
+    <div class="intro" id="intro">
+      <p>This is <b>P0</b> — a language model built from scratch (~3.3M params, trained on CPU).
+      It's still young, so it <b>continues your text</b> more than it answers. Say hi and watch it think, one character at a time.</p>
+      <div class="chips" id="chips"></div>
+    </div>
+  </div>
+
+  <footer>
+    <div class="settings" id="settings">
+      <div class="sg"><label>Temperature <b id="tempV">0.70</b></label><input id="temp" type="range" min="0.1" max="1.5" step="0.05" value="0.7"></div>
+      <div class="sg"><label>Length <b id="lenV">200</b></label><input id="len" type="range" min="40" max="600" step="20" value="200"></div>
+    </div>
+    <div class="row">
+      <button id="gear" title="Settings">⚙</button>
+      <textarea id="input" placeholder="Say something to P0…" rows="1"></textarea>
+      <button id="send">SEND</button>
+    </div>
+    <div class="note" id="note">P0 trains live — replies may be slow or playful.</div>
+  </footer>
+
+<script>
+  // Same-origin: Caddy (droplet) and Netlify both proxy /chat-api/* to serve.py.
+  const API = '/chat-api';
+  const $ = id => document.getElementById(id);
+  const chat=$('chat'), input=$('input'), sendBtn=$('send'), dot=$('dot');
+  const temp=$('temp'), len=$('len'), intro=$('intro');
+  let controller=null;
+
+  const SUGGEST=["Hello P0","Once upon a time","The meaning of life is","Tell me a story","Dear friend,"];
+  SUGGEST.forEach(t=>{const c=document.createElement('div');c.className='chip';c.textContent=t;
+    c.onclick=()=>{input.value=t;input.focus();};$('chips').appendChild(c);});
+
+  temp.oninput=()=>$('tempV').textContent=(+temp.value).toFixed(2);
+  len.oninput =()=>$('lenV').textContent=len.value;
+  $('gear').onclick=()=>$('settings').classList.toggle('show');
+
+  fetch(API+'/info',{signal:AbortSignal.timeout(8000)}).then(r=>r.json()).then(i=>{
+    $('meta').textContent=`${(i.parameters/1e6).toFixed(1)}M · ${i.dataset_version}`;
+    dot.classList.add('on');
+  }).catch(()=>{$('meta').textContent='offline';});
+
+  function addMsg(who,cls){
+    const m=document.createElement('div'); m.className='msg '+cls;
+    m.innerHTML=`<div class="av">${who}</div><div class="bubble"></div>`;
+    chat.appendChild(m); chat.scrollTop=chat.scrollHeight;
+    return m.querySelector('.bubble');
+  }
+  function setBusy(on){
+    sendBtn.textContent=on?'STOP':'SEND'; sendBtn.classList.toggle('stop',on);
+    dot.classList.toggle('busy',on); dot.classList.toggle('on',!on);
+  }
+
+  async function send(){
+    const prompt=input.value.trim();
+    if(!prompt||controller) return;
+    if(intro) intro.style.display='none';
+    input.value=''; input.style.height='auto';
+    addMsg('YOU','you').textContent=prompt;
+    const body=addMsg('P0','p0'); body.classList.add('cursor');
+
+    controller=new AbortController(); setBusy(true);
+    try{
+      const res=await fetch(API+'/generate',{
+        method:'POST', headers:{'Content-Type':'application/json'},
+        body:JSON.stringify({prompt, max_new_tokens:+len.value, temperature:+temp.value, top_k:50}),
+        signal:controller.signal,
+      });
+      const reader=res.body.getReader(); const dec=new TextDecoder();
+      while(true){
+        const {done,value}=await reader.read(); if(done) break;
+        body.textContent+=dec.decode(value,{stream:true});
+        chat.scrollTop=chat.scrollHeight;
+      }
+    }catch(e){
+      if(e.name!=='AbortError') body.textContent+=`\n[error: ${e.message}]`;
+    }finally{
+      body.classList.remove('cursor'); controller=null; setBusy(false);
+    }
+  }
+
+  sendBtn.onclick=()=>controller?controller.abort():send();
+  input.addEventListener('keydown',e=>{
+    if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();send();}
+  });
+  input.addEventListener('input',()=>{input.style.height='auto';input.style.height=Math.min(input.scrollHeight,140)+'px';});
+</script>
+</body>
+</html>

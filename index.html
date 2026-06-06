@@ -2,8 +2,16 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>DATA HAVEN — CIPHER WORLD</title>
+
+<!-- PWA / phone-app -->
+<meta name="theme-color" content="#1a1a2e">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="icon.svg">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="P0 Daycare">
 
 <!-- Fonts -->
 <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=DotGothic16&display=swap" rel="stylesheet">
@@ -1314,6 +1322,12 @@ body::after {
 .g-btn-gold   { border-color: var(--accent-gold); color: var(--accent-gold); }
 .g-btn-gold:hover { background: rgba(255,215,0,0.1); }
 .g-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+.chat-btn {
+  display: block; width: 100%; text-decoration: none;
+  padding: 12px 4px; margin-bottom: 10px; font-size: 11px;
+  box-shadow: 0 0 12px rgba(255,215,0,0.25);
+}
+.chat-btn:hover { background: rgba(255,215,0,0.12); }
 .btn-status {
   margin-top: 6px;
   font-size: 10px;
@@ -1856,6 +1870,7 @@ SYNC: OK</div>
 
     <!-- Action Buttons -->
     <div class="btn-panel">
+      <a href="chat.html" class="g-btn g-btn-gold chat-btn">&#128172; CHAT WITH P0</a>
       <div class="btn-panel-title">&#9670; REQUEST UPDATE</div>
       <div class="btn-grid">
         <button class="g-btn" onclick="doRefresh()">&#8635; REFRESH</button>

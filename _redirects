@@ -1,5 +1,6 @@
 # Netlify proxies these to the droplet APIs server-side, so the browser only
 # ever sees same-origin HTTPS — no mixed content, no CORS. The dashboard uses
 # relative /api/... paths, so nothing in the page needs to change.
-/api/status   http://24.144.111.138:8001/api/status      200
-/api/op/*     http://24.144.111.138:8002/api/op/:splat    200
+/api/status    http://24.144.111.138:8001/api/status      200
+/api/op/*      http://24.144.111.138:8002/api/op/:splat    200
+/chat-api/*    http://24.144.111.138:8003/api/:splat       200
